@@ -1,0 +1,28 @@
+# --- PII / data hygiene: raw Jira JSON is NEVER committed (real reporter/assignee names) ---
+data/
+*.json
+!adf/**/*.json
+
+# Secrets
+.env
+
+# Personal / cross-project working files — excluded per mini #1 precedent
+TEACHING_PREFERENCES.md
+LEARNINGS.md
+LEARNING_ROADMAP.md
+MINI2_KICKOFF.md
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Power BI temp/cache
+*.pbix.tmp
+.pbi/
+
+# OS / editor noise
+Thumbs.db
+.DS_Store
+.vscode/
