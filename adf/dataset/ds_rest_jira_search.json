@@ -1,0 +1,16 @@
+{
+    "name": "ds_rest_jira_search",
+    "properties": {
+        "description": "Jira search endpoint, locked JQL window (JRASERVER, created >= 2015-01-01), 500/page. {offset} placeholder is driven by the Copy activity pagination rule.",
+        "linkedServiceName": {
+            "referenceName": "ls_rest_jira",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "RestResource",
+        "typeProperties": {
+            "relativeUrl": "rest/api/2/search?jql=project%20%3D%20JRASERVER%20AND%20created%20%3E%3D%202015-01-01%20ORDER%20BY%20created%20ASC&startAt={offset}&maxResults=500&fields=key,issuetype,status,priority,created,updated,resolutiondate,resolution,components,assignee"
+        },
+        "schema": []
+    }
+}

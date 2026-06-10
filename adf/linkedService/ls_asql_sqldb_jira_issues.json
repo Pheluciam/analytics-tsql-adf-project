@@ -1,0 +1,17 @@
+{
+    "name": "ls_asql_sqldb_jira_issues",
+    "properties": {
+        "description": "Azure SQL connection to sqldb-jira-issues for raw JSON staging and T-SQL processing. SQL auth as phil-sqladmin. SECURITY NOTE: the password lives only in the data factory's managed credential store; this repo copy is sanitised and the password property is intentionally absent.",
+        "annotations": [],
+        "type": "AzureSqlDatabase",
+        "version": "2.0",
+        "typeProperties": {
+            "server": "sql-analytics-tsql-adf-phm.database.windows.net",
+            "database": "sqldb-jira-issues",
+            "encrypt": "mandatory",
+            "trustServerCertificate": false,
+            "authenticationType": "SQL",
+            "userName": "phil-sqladmin"
+        }
+    }
+}

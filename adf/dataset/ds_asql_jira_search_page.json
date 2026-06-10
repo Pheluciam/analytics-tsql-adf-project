@@ -1,0 +1,17 @@
+{
+    "name": "ds_asql_jira_search_page",
+    "properties": {
+        "description": "Staging sink: raw.jira_search_page in sqldb-jira-issues. One row per API page, raw issues[] JSON plus batch metadata.",
+        "linkedServiceName": {
+            "referenceName": "ls_asql_sqldb_jira_issues",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "AzureSqlTable",
+        "typeProperties": {
+            "schema": "raw",
+            "table": "jira_search_page"
+        },
+        "schema": []
+    }
+}

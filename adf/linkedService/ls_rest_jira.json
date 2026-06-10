@@ -1,0 +1,13 @@
+{
+    "name": "ls_rest_jira",
+    "properties": {
+        "description": "Anonymous REST connection to Atlassian public Jira (jira.atlassian.com) for issue search ingestion.",
+        "annotations": [],
+        "type": "RestService",
+        "typeProperties": {
+            "url": "https://jira.atlassian.com",
+            "enableServerCertificateValidation": true,
+            "authenticationType": "Anonymous"
+        }
+    }
+}

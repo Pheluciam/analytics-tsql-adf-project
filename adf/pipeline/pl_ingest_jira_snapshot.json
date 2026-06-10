@@ -1,0 +1,127 @@
+{
+    "name": "pl_ingest_jira_snapshot",
+    "properties": {
+        "description": "Copies the locked Jira JQL window page-by-page (500/issue pages) into raw.jira_search_page. Pagination via startAt RANGE rule; snapshot_label parameter tags each pull.",
+        "activities": [
+            {
+                "name": "copy_jira_search_to_staging",
+                "description": "REST source with startAt RANGE pagination; lands one row per page into raw.jira_search_page.",
+                "type": "Copy",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "RestSource",
+                        "httpRequestTimeout": "00:01:40",
+                        "requestInterval": "00:00:01",
+                        "requestMethod": "GET",
+                        "paginationRules": {
+                            "supportRFC5988": "false",
+                            "AbsoluteUrl.{offset}": "RANGE:0::500",
+                            "EndCondition:$.issues": "Empty",
+                            "MaxRequestNumber": "50"
+                        },
+                        "additionalColumns": [
+                            {
+                                "name": "pipeline_run_id",
+                                "value": {
+                                    "value": "@pipeline().RunId",
+                                    "type": "Expression"
+                                }
+                            },
+                            {
+                                "name": "snapshot_label",
+                                "value": {
+                                    "value": "@pipeline().parameters.snapshot_label",
+                                    "type": "Expression"
+                                }
+                            }
+                        ]
+                    },
+                    "sink": {
+                        "type": "AzureSqlSink",
+                        "writeBehavior": "insert"
+                    },
+                    "enableStaging": false,
+                    "translator": {
+                        "type": "TabularTranslator",
+                        "mappings": [
+                            {
+                                "source": {
+                                    "name": "startAt"
+                                },
+                                "sink": {
+                                    "name": "start_at",
+                                    "type": "Int32"
+                                }
+                            },
+                            {
+                                "source": {
+                                    "name": "total"
+                                },
+                                "sink": {
+                                    "name": "total_issues",
+                                    "type": "Int32"
+                                }
+                            },
+                            {
+                                "source": {
+                                    "name": "issues"
+                                },
+                                "sink": {
+                                    "name": "page_json",
+                                    "type": "String"
+                                }
+                            },
+                            {
+                                "source": {
+                                    "name": "pipeline_run_id"
+                                },
+                                "sink": {
+                                    "name": "pipeline_run_id",
+                                    "type": "String"
+                                }
+                            },
+                            {
+                                "source": {
+                                    "name": "snapshot_label"
+                                },
+                                "sink": {
+                                    "name": "snapshot_label",
+                                    "type": "String"
+                                }
+                            }
+                        ],
+                        "mapComplexValuesToString": true
+                    }
+                },
+                "inputs": [
+                    {
+                        "referenceName": "ds_rest_jira_search",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "ds_asql_jira_search_page",
+                        "type": "DatasetReference"
+                    }
+                ]
+            }
+        ],
+        "parameters": {
+            "snapshot_label": {
+                "type": "string",
+                "defaultValue": "snapshot_1"
+            }
+        },
+        "annotations": []
+    }
+}
