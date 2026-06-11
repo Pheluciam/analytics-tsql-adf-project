@@ -5,12 +5,13 @@
 
 ---
 
-## Current state (as of Phase 1 close, 2026-06-10)
+## Current state (as of Phase 2 close, 2026-06-11)
 
-- **Phase:** 1 COMPLETE — staging DDL + ADF ingestion pipeline + snapshot 1 landed and verified.
-- **Next up:** Phase 2 — OPENJSON shred procs, dims + fact, MERGE upsert (the lead-theme core).
-  Forward-verify pass at kickoff: OPENJSON typed shred patterns (WITH clause), MERGE
-  best-practice on Azure SQL, TRY/CATCH + THROW conventions.
+- **Phase:** 2 COMPLETE — OPENJSON shred, star schema (stg + dm), MERGE upsert procs,
+  verify suite 02 all 11 checks PASS. Snapshot 1 fully modelled: 19,339 fact rows.
+- **Next up:** Phase 3 — presentation views for PBI (one per dashboard concern),
+  then re-run pipeline as snapshot_2 → shred → merge: the OUTPUT $action counts
+  produce the before/after MERGE-update evidence.
 
 ## Environment reference
 
@@ -78,3 +79,28 @@
 - INGESTION_PIPELINE.md walkthrough authored. LEARNINGS M2-1..5 banked.
 - Working-style: North-star decision rule locked (no design-fork questions; senior-DE
   call, employer lens). Process-drift ledger M2-5.
+
+### Phase 2 — 2026-06-11 (this session)
+
+- Forward-verify pass FIRST: OPENJSON WITH-clause lax-NULL risk, Jira +0000 timestamp
+  parse gap, MERGE guardrails (HOLDLOCK / key-only ON / indexed key), TRY/CATCH +
+  THROW + XACT_ABORT convention — banked as M2-P2-1..4 before any build.
+- Model DDL (sql/ddl/02): stg.jira_issue + stg.jira_issue_component (truncate-reload);
+  dm.dim_status / dim_priority / dim_issuetype / dim_component (TINYINT/SMALLINT keys,
+  UNIQUE natural keys); dm.dim_date 2015-2027 populated via GENERATE_SERIES (4,748 rows);
+  dm.fact_issue (grain = issue key, FKs enforced, PERSISTED cycle_days, upsert audit
+  columns); dm.bridge_issue_component (issue↔component many-to-many, grain preserved).
+- Procs (sql/proc/01-03): stg.load_jira_issue (OPENJSON shred, STUFF timestamp repair,
+  ROW_NUMBER dedupe, post-load conversion THROW); dm.merge_dimensions (4 MERGEs,
+  HOLDLOCK, IS DISTINCT FROM change gate on status_category); dm.merge_fact_issue
+  (MERGE upsert, change-only UPDATE branch, OUTPUT $action counts, bridge
+  delete-and-insert, run-order pre-flights).
+- Run end-to-end by Phil in portal Query editor: all procs sub-second to ~4s.
+  Verify suite 02 (single PASS/FAIL grid, Phil-requested format from Project #3):
+  11/11 PASS — parity 19,339 exact, 17,555 component pairs, 15/5/4/150 dim rows,
+  insert-only audit clean, dates in range. Mix eyeball: Done 64% / To Do 35.9%.
+- Bugs banked: M2-6 (predicate comparison syntax error), M2-7 (Query editor hides
+  PRINT + shows only last result set).
+- Working-style: ship-first debugging locked as standing default (M2-8);
+  TEACHING_PREFERENCES updated in place.
+- TSQL_MODEL.md walkthrough authored. LEARNINGS M2-P2-1..4 + M2-6..8 banked.
