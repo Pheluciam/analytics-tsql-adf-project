@@ -35,7 +35,10 @@ SELECT
     t.issuetype_name,
     s.status_name,
     s.status_category,
-    p.priority_name,
+    -- Phase 4: '(none)' relabelled at the presentation layer (BA-friendly axis
+    -- label; dm keeps the raw value, PQ stays zero-transform per M2-P3-4)
+    priority_name = CASE WHEN p.priority_name = N'(none)'
+                         THEN N'No Priority' ELSE p.priority_name END,
     f.created_date_key,
     f.resolved_date_key,
     created_date  = CONVERT(DATE, f.created_utc),
@@ -58,7 +61,8 @@ AS
 SELECT
     f.issue_key,
     t.issuetype_name,
-    p.priority_name,
+    priority_name = CASE WHEN p.priority_name = N'(none)'
+                         THEN N'No Priority' ELSE p.priority_name END,
     resolution_name = CASE WHEN f.resolved_utc IS NULL
                            THEN N'(unresolved)'
                            ELSE COALESCE(f.resolution_name, N'(none)') END,
@@ -98,7 +102,8 @@ CREATE OR ALTER VIEW pbi.vw_priority_component_mix
 AS
 SELECT
     f.issue_key,
-    p.priority_name,
+    priority_name = CASE WHEN p.priority_name = N'(none)'
+                         THEN N'No Priority' ELSE p.priority_name END,
     t.issuetype_name,
     s.status_category,
     component_name = COALESCE(c.component_name, N'(no component)'),
@@ -133,6 +138,9 @@ SELECT
     d.day_of_week_iso,
     d.day_name,
     d.is_weekend,
-    d.year_month_label
+    d.year_month_label,
+    -- Phase 4: month-grain continuous axis for PBI trend charts (a 138-month
+    -- categorical axis cramps and scrolls; a real DATE keeps the axis clean)
+    month_start_date = DATEFROMPARTS(d.calendar_year, d.calendar_month, 1)
 FROM dm.dim_date AS d;
 GO

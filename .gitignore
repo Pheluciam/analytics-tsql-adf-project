@@ -18,9 +18,10 @@ __pycache__/
 .venv/
 venv/
 
-# Power BI temp/cache
+# Power BI temp/cache + local safety copies
 *.pbix.tmp
 .pbi/
+*_safety.pbix
 
 # OS / editor noise
 Thumbs.db

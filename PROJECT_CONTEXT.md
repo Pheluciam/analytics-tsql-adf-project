@@ -5,15 +5,17 @@
 
 ---
 
-## Current state (as of Phase 3 close, 2026-06-11)
+## Current state (as of Phase 4 session 1 close, 2026-06-11)
 
-- **Phase:** 3 COMPLETE — pbi presentation views (one per dashboard page + date
-  passthrough), snapshot_2 pulled and merged (2 INSERT / 5 UPDATE / bridge
-  17,555→17,558 — the MERGE story captured), verify suite 03 all 11 checks PASS.
-  Fact now 19,341 rows.
-- **Next up:** Phase 4 — Power BI Desktop: Import the four pbi views, star on
-  vw_dim_date (created active / resolved inactive relationship), _Measures
-  table, documented DAX incl. time intelligence, 3 locked pages.
+- **Phase:** 4 IN PROGRESS — semantic model COMPLETE (Import on the four pbi
+  views, 5 relationships incl. 2 inactive resolved-date, vw_dim_date marked as
+  date table, hidden _Measures table, 21 documented measures incl. time
+  intelligence, smoke-tested 12,371 + 6,970 = 19,341). Page 1 of 3 (Backlog
+  Pressure — Demand vs Delivery) BUILT. .pbix saved at
+  pbi/jira_ticket_ops_analytics.pbix.
+- **Next up:** Phase 4 session 2 — pages 2 (Cycle Time & Ageing) and
+  3 (Priority & Component Mix), then final polish pass on all three pages
+  (incl. flagged KPI-card colour revisit), screenshots, Phase 5 ship.
 
 ## Environment reference
 
@@ -45,6 +47,17 @@
   Studio forms were insufficient (UI lags engine on pagination rules — LEARNINGS M2-3).
 - 2026-06-10 (Phase 1) — Stop-probe row kept in staging (raw = verbatim); verification
   guard excludes empty pages instead (LEARNINGS M2-1).
+- 2026-06-11 (Phase 4) — Classic time intelligence (marked date table + TOTALYTD etc.)
+  over the new calendar-based preview: GA features only in portfolio work (M2-P4-2).
+- 2026-06-11 (Phase 4) — vw_dim_date gained month_start_date: a 138-month categorical
+  axis cramps and scrolls; a real DATE gives a continuous month-grain axis. Contract
+  change made in T-SQL, not PQ (M2-P3-4 holds).
+- 2026-06-11 (Phase 4) — '(none)' priority relabelled 'No Priority' in the pbi views,
+  NOT in Power Query or dm. Roche's maxim: pbi schema IS the consumer-specific layer
+  we own; label lives once, in source control, consistent across all three views.
+- 2026-06-11 (Phase 4) — Inflow/outflow visual: diverging Net Monthly Flow bars
+  (sign-coloured) instead of two-series columns (unreadable at 138 months) or a second
+  line chart (rejected as lazy). Theme: built-in City Park; custom theme JSON rejected.
 
 ## Session closeouts
 
@@ -135,3 +148,31 @@
   fired for real). Fixed by dropping the column from stg/fact/procs (frozen
   snapshot_1 could never backfill it; no dashboard use; PII surface). M2-11.
 - TSQL_MODEL.md Phase 3 section added. LEARNINGS M2-P3-1..4 + M2-9..11 banked.
+
+### Phase 4 session 1 — 2026-06-11 (this session)
+
+- Forward-verify pass FIRST: Azure SQL connector flow (2026-03 doc), mark-as-date-table
+  mandatory for integer date keys, calendar-based TI is preview → classic chosen,
+  relationship autodetect risk. Banked M2-P4-1..4 before opening PBI Desktop.
+- Model built and verified: Import on the four pbi views only; autodetect off;
+  5 hand-built relationships (created active ×3, resolved inactive ×2, all *:1
+  single-direction into vw_dim_date.date_key); vw_dim_date marked as date table on
+  date_value; keys hidden; month_name/day_name/age_bucket sort columns set;
+  hidden _Measures table.
+- 21 documented measures in 5 batches (inflow/outflow/backlog incl. USERELATIONSHIP
+  outflow + cumulative VAR pattern, TOTALYTD/DATEADD/MoM%, cycle percentiles
+  (MEDIAN / PERCENTILE.INC), mix DISTINCTCOUNTs, Resolution Rate %, Net Monthly Flow).
+  Smoke test: resolved 12,371 + open 6,970 = 19,341 exact.
+- Page 1 (Backlog Pressure — Demand vs Delivery) built: 5-tile new-Card KPI strip,
+  Net Backlog cumulative line (12-year relative-date filter trims the future tail),
+  diverging Net Monthly Flow bars (rule-based sign colouring), open-by-priority bar
+  (headline finding: most open issues carry No Priority), calendar_year Between
+  slicer. Page titles/subtitles locked for all three pages.
+- View contract changes this session (deployed + mirrored to repo DDL):
+  month_start_date added to vw_dim_date; '(none)' → 'No Priority' in three views.
+- Bugs/quirks banked: M2-12 (DAX VAR name collided with LASTDATE function),
+  M2-13 (new Card hides Display units until a specific card is selected).
+- Working-style: container-first ordering + common-settings-bullets + narrow-tables
+  rule locked into TEACHING_PREFERENCES after repeated format resets (M2-14).
+- Deferred to session 2: pages 2-3, final polish (KPI-card colours flagged),
+  screenshots, README.
