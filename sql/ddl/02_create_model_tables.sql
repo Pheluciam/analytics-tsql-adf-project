@@ -38,7 +38,6 @@ CREATE TABLE stg.jira_issue
 (
     issue_key       NVARCHAR(20)  NOT NULL,
     issue_id        INT           NOT NULL,
-    summary         NVARCHAR(400) NULL,
 
     -- Dim attributes COALESCEd to N'(none)' at load time, so dim lookups
     -- never have to handle NULL business keys.
@@ -184,7 +183,6 @@ CREATE TABLE dm.fact_issue
 (
     issue_key           NVARCHAR(20)  NOT NULL,
     issue_id            INT           NOT NULL,
-    summary             NVARCHAR(400) NULL,
 
     status_key          TINYINT       NOT NULL,
     priority_key        TINYINT       NOT NULL,

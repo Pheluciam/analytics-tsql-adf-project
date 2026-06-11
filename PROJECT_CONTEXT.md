@@ -5,13 +5,15 @@
 
 ---
 
-## Current state (as of Phase 2 close, 2026-06-11)
+## Current state (as of Phase 3 close, 2026-06-11)
 
-- **Phase:** 2 COMPLETE — OPENJSON shred, star schema (stg + dm), MERGE upsert procs,
-  verify suite 02 all 11 checks PASS. Snapshot 1 fully modelled: 19,339 fact rows.
-- **Next up:** Phase 3 — presentation views for PBI (one per dashboard concern),
-  then re-run pipeline as snapshot_2 → shred → merge: the OUTPUT $action counts
-  produce the before/after MERGE-update evidence.
+- **Phase:** 3 COMPLETE — pbi presentation views (one per dashboard page + date
+  passthrough), snapshot_2 pulled and merged (2 INSERT / 5 UPDATE / bridge
+  17,555→17,558 — the MERGE story captured), verify suite 03 all 11 checks PASS.
+  Fact now 19,341 rows.
+- **Next up:** Phase 4 — Power BI Desktop: Import the four pbi views, star on
+  vw_dim_date (created active / resolved inactive relationship), _Measures
+  table, documented DAX incl. time intelligence, 3 locked pages.
 
 ## Environment reference
 
@@ -104,3 +106,32 @@
 - Working-style: ship-first debugging locked as standing default (M2-8);
   TEACHING_PREFERENCES updated in place.
 - TSQL_MODEL.md walkthrough authored. LEARNINGS M2-P2-1..4 + M2-6..8 banked.
+
+### Phase 3 — 2026-06-11 (this session)
+
+- Forward-verify pass FIRST: CREATE VIEW engine doc + PBI Import guidance —
+  ORDER BY illegal/meaningless in views, non-schemabound metadata freeze
+  (no SELECT *), PERSISTED computed columns read clean through views,
+  one PQ query = one view zero transforms. Banked M2-P3-1..4 before any build.
+- pbi contract layer (sql/ddl/03): vw_backlog_flow (issue grain),
+  vw_resolution_performance (issue grain: cycle_days, refresh-time age_days +
+  ageing buckets with numeric sort column), vw_priority_component_mix
+  (issue×component via bridge, LEFT JOIN keeps component-less, over-90d SLA
+  flag), vw_dim_date passthrough. is_open defined once across all views
+  (resolved_utc IS NULL). No SCHEMABINDING, explicit column lists.
+- dm.merge_fact_issue edit: $action tallies now returned as a result set
+  (portal suppresses PRINT — M2-7 applied forward, banked M2-10).
+- Snapshot 2: pl_ingest_jira_snapshot debug-run with snapshot_label=snapshot_2
+  (40 pages, 1m2s) → shred → merge. MERGE story: 2 INSERT / 5 UPDATE,
+  bridge 17,555→17,558, fact 19,339→19,341. Unchanged rows kept snapshot_1
+  audit labels — IS DISTINCT FROM gate verified honest.
+- Verify suite 03 (single PASS/FAIL grid, dynamic counts): 11/11 PASS —
+  raw two-snapshot integrity, staging truncate-reload contract, independent
+  re-shred parity, audit-label integrity, view-grain contracts, cross-view
+  open-definition consistency, cycle/age mutual exclusivity.
+- One auto-pause resume failure on first portal query (banked M2-9).
+- Bug caught by Phil at the eyeball: summary NULL on every fact row since
+  Phase 2 — fields= list never requested it; lax-mode OPENJSON NULL (M2-P2-1
+  fired for real). Fixed by dropping the column from stg/fact/procs (frozen
+  snapshot_1 could never backfill it; no dashboard use; PII surface). M2-11.
+- TSQL_MODEL.md Phase 3 section added. LEARNINGS M2-P3-1..4 + M2-9..11 banked.

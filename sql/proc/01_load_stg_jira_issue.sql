@@ -42,7 +42,6 @@ BEGIN
                 p.snapshot_label,
                 j.issue_key,
                 j.issue_id,
-                j.summary,
                 status_name     = COALESCE(j.status_name, N'(none)'),
                 status_category = COALESCE(j.status_category, N'(none)'),
                 priority_name   = COALESCE(j.priority_name, N'(none)'),
@@ -63,7 +62,6 @@ BEGIN
                 WITH (
                     issue_key       NVARCHAR(20)  N'$.key',
                     issue_id        INT           N'$.id',
-                    summary         NVARCHAR(400) N'$.fields.summary',
                     status_name     NVARCHAR(60)  N'$.fields.status.name',
                     status_category NVARCHAR(30)  N'$.fields.status.statusCategory.name',
                     priority_name   NVARCHAR(30)  N'$.fields.priority.name',
@@ -89,11 +87,11 @@ BEGIN
             FROM shredded
         )
         INSERT INTO stg.jira_issue
-                (issue_key, issue_id, summary,
+                (issue_key, issue_id,
                  status_name, status_category, priority_name, issuetype_name,
                  resolution_name, created_utc, updated_utc, resolved_utc,
                  components_json, page_id, snapshot_label)
-        SELECT issue_key, issue_id, summary,
+        SELECT issue_key, issue_id,
                status_name, status_category, priority_name, issuetype_name,
                resolution_name, created_utc, updated_utc, resolved_utc,
                components_json, page_id, snapshot_label

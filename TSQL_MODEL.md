@@ -130,3 +130,51 @@ plus two eyeball samples.
 Portal Query editor quirks noted while running (LEARNINGS M2-7): PRINT output
 is not displayed, and only the last result set of a multi-statement script is
 rendered — highlight-and-run a selection to see an earlier result set.
+
+---
+
+## Phase 3 — presentation views + the MERGE story (2026-06-11)
+
+### The pbi contract layer
+
+`sql/ddl/03_create_presentation_views.sql` adds a `pbi` schema: the surface
+Power BI imports from, one view per locked dashboard page plus a calendar
+passthrough. Forward-verified design rules (LEARNINGS M2-P3-1..4): explicit
+column lists (no `SELECT *` — non-schemabound views freeze metadata), no
+SCHEMABINDING (keeps `dm` alterable), no ORDER BY, dim labels denormalised in
+so each Power Query query maps 1:1 to a view with zero transformations.
+
+| View | Grain | Dashboard concern |
+| --- | --- | --- |
+| `pbi.vw_backlog_flow` | issue | inflow / outflow / net backlog trend |
+| `pbi.vw_resolution_performance` | issue | cycle-time percentiles, ageing of open issues |
+| `pbi.vw_priority_component_mix` | issue × component | distribution + SLA flags |
+| `pbi.vw_dim_date` | date | shared time-intelligence calendar |
+
+Cross-view consistency: open/closed is defined ONCE (`is_open` =
+`resolved_utc IS NULL`), matching the `cycle_days`/`age_days` arithmetic.
+`age_days`, ageing buckets and the over-90-day SLA flag use `SYSUTCDATETIME()`
+deliberately — they recompute at every PBI refresh instead of freezing at load
+time. The mix view fans multi-component issues through the bridge (LEFT JOIN
+keeps component-less issues as `(no component)`); issue-level measures on it
+must use `DISTINCTCOUNT(issue_key)` — flagged for Phase 4 DAX.
+
+### Snapshot 2 — the MERGE upsert evidence (2026-06-11)
+
+The Phase 1 pipeline re-ran with `snapshot_label = snapshot_2` (40 pages,
+1m 2s), then the same three procs from the run book. `dm.merge_fact_issue` now
+also returns its `OUTPUT $action` tallies as a result set (the portal hides
+PRINT — M2-7):
+
+| Measure | snapshot_1 | snapshot_2 |
+| --- | --- | --- |
+| Fact rows | 19,339 | 19,341 |
+| MERGE `$action` | 19,339 INSERT | **2 INSERT / 5 UPDATE** |
+| Bridge pairs | 17,555 | 17,558 |
+
+One day on: 2 new issues entered the locked JQL window, 5 existing issues
+changed (the `IS DISTINCT FROM` gate passed only real changes), and unchanged
+rows kept their `snapshot_1` audit labels — `last_updated_utc` stays an honest
+change marker. Verification: `sql/verify/03_phase3_views_merge_verification.sql`
+(11 PASS/FAIL checks: raw/staging/fact/bridge parity, audit-label integrity,
+view-grain contracts, cross-view open-definition consistency) — 11/11 PASS.

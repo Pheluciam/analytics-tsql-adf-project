@@ -58,7 +58,6 @@ BEGIN
             SELECT
                 i.issue_key,
                 i.issue_id,
-                i.summary,
                 s.status_key,
                 p.priority_key,
                 t.issuetype_key,
@@ -82,10 +81,8 @@ BEGIN
               OR tgt.resolution_name   IS DISTINCT FROM src.resolution_name
               OR tgt.resolved_date_key IS DISTINCT FROM src.resolved_date_key
               OR tgt.updated_utc       IS DISTINCT FROM src.updated_utc
-              OR tgt.resolved_utc      IS DISTINCT FROM src.resolved_utc
-              OR tgt.summary           IS DISTINCT FROM src.summary)
+              OR tgt.resolved_utc      IS DISTINCT FROM src.resolved_utc)
             THEN UPDATE SET
-                 tgt.summary             = src.summary,
                  tgt.status_key          = src.status_key,
                  tgt.priority_key        = src.priority_key,
                  tgt.issuetype_key       = src.issuetype_key,
@@ -96,12 +93,12 @@ BEGIN
                  tgt.last_updated_utc    = SYSUTCDATETIME(),
                  tgt.last_snapshot_label = @snapshot_label
         WHEN NOT MATCHED BY TARGET
-            THEN INSERT (issue_key, issue_id, summary,
+            THEN INSERT (issue_key, issue_id,
                          status_key, priority_key, issuetype_key, resolution_name,
                          created_date_key, resolved_date_key,
                          created_utc, updated_utc, resolved_utc,
                          last_snapshot_label)
-                 VALUES (src.issue_key, src.issue_id, src.summary,
+                 VALUES (src.issue_key, src.issue_id,
                          src.status_key, src.priority_key, src.issuetype_key,
                          src.resolution_name,
                          src.created_date_key, src.resolved_date_key,
@@ -138,6 +135,14 @@ BEGIN
                      @inserted, N' inserted, ',
                      @updated,  N' updated, ',
                      @bridge_rows, N' bridge rows refreshed.');
+
+        -- Result-set copy of the tallies: the portal Query editor suppresses
+        -- PRINT (M2-7), and these counts ARE the Phase 3 MERGE evidence.
+        SELECT
+            snapshot_label = @snapshot_label,
+            inserted_rows  = @inserted,
+            updated_rows   = @updated,
+            bridge_rows    = @bridge_rows;
     END TRY
     BEGIN CATCH
         IF @@TRANCOUNT > 0
