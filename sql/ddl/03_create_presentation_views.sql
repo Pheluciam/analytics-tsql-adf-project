@@ -94,7 +94,7 @@ GO
 ------------------------------------------------------------------------------
 -- Page 3 — priority / component mix. Issue x component grain: the bridge
 -- fans multi-component issues into one row per pair; LEFT JOIN keeps
--- component-less issues as '(no component)'. Issue-level measures on this
+-- component-less issues as 'No Component'. Issue-level measures on this
 -- view must use DISTINCTCOUNT(issue_key) — documented for Phase 4 DAX.
 -- SLA flag: open issues older than 90 days, evaluated at refresh time.
 ------------------------------------------------------------------------------
@@ -106,7 +106,9 @@ SELECT
                          THEN N'No Priority' ELSE p.priority_name END,
     t.issuetype_name,
     s.status_category,
-    component_name = COALESCE(c.component_name, N'(no component)'),
+    -- Phase 4: bracket label dropped for the BA-facing treemap ('No Component'
+    -- matches the 'No Priority' relabel precedent; dm keeps NULL semantics)
+    component_name = COALESCE(c.component_name, N'No Component'),
     f.created_date_key,
     is_open = CASE WHEN f.resolved_utc IS NULL THEN 1 ELSE 0 END,
     is_open_over_90d = CASE WHEN f.resolved_utc IS NULL

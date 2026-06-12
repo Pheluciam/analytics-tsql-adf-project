@@ -5,17 +5,17 @@
 
 ---
 
-## Current state (as of Phase 4 session 1 close, 2026-06-11)
+## Current state (as of Phase 4 session 2 close, 2026-06-12)
 
-- **Phase:** 4 IN PROGRESS — semantic model COMPLETE (Import on the four pbi
-  views, 5 relationships incl. 2 inactive resolved-date, vw_dim_date marked as
-  date table, hidden _Measures table, 21 documented measures incl. time
-  intelligence, smoke-tested 12,371 + 6,970 = 19,341). Page 1 of 3 (Backlog
-  Pressure — Demand vs Delivery) BUILT. .pbix saved at
+- **Phase:** 4 COMPLETE — all three dashboard pages BUILT and polished
+  (Backlog Pressure / Cycle Time & Ageing / Priority & Component Mix),
+  25 documented measures (4 added this session), friendly titles + axis +
+  tooltip labels across every visual, KPI accent bars on theme green.
+  Screenshots in pbi/screenshots/ (01-03). .pbix saved at
   pbi/jira_ticket_ops_analytics.pbix.
-- **Next up:** Phase 4 session 2 — pages 2 (Cycle Time & Ageing) and
-  3 (Priority & Component Mix), then final polish pass on all three pages
-  (incl. flagged KPI-card colour revisit), screenshots, Phase 5 ship.
+- **Next up:** Phase 5 ship — README full pass (screenshots, data-audit note,
+  AI-assistance disclosure, March-2025 bulk-cleanup finding), repo About +
+  tags + profile entry + pin, final ENGINEERING_STANDARDS audit.
 
 ## Environment reference
 
@@ -58,6 +58,17 @@
 - 2026-06-11 (Phase 4) — Inflow/outflow visual: diverging Net Monthly Flow bars
   (sign-coloured) instead of two-series columns (unreadable at 138 months) or a second
   line chart (rejected as lazy). Theme: built-in City Park; custom theme JSON rejected.
+- 2026-06-12 (Phase 4 s2) — Cardinality rule for part-of-whole visuals: donut rejected
+  at 10+ resolution categories (Phil's call) → sorted bar/column; component treemap
+  capped with a visual-level Top N 10 filter for the same reason.
+- 2026-06-12 (Phase 4 s2) — Role-playing trend measures get explicit USERELATIONSHIP
+  variants (Median Cycle Days (Trend)) rather than re-wiring KPI measures; KPI tiles
+  keep the active created-date context.
+- 2026-06-12 (Phase 4 s2) — '(no component)' → 'No Component' relabelled in
+  pbi.vw_priority_component_mix, T-SQL not PQ (Roche's maxim, third application);
+  dependent DAX filter in Components with Open Work updated to match.
+- 2026-06-12 (Phase 4 s2) — Measures audit: zero deletions. (Running) pair feeds
+  Net Backlog; TI batch (YTD/MoM%/PM) kept as documented portfolio evidence.
 
 ## Session closeouts
 
@@ -176,3 +187,30 @@
   rule locked into TEACHING_PREFERENCES after repeated format resets (M2-14).
 - Deferred to session 2: pages 2-3, final polish (KPI-card colours flagged),
   screenshots, README.
+
+### Phase 4 session 2 — 2026-06-12 (this session)
+
+- Page 2 (Cycle Time & Ageing) built: 5-tile KPI strip (Median/Avg/P90 Cycle Days,
+  Issues Resolved, % Resolved in 30 Days), median-cycle trend line on explicit
+  USERELATIONSHIP variant, age-bucket bar (Over-365 dominates), resolution-type
+  column (donut rejected at 10+ categories).
+- Page 3 (Priority & Component Mix) built: 5-tile KPI strip (incl. new % Open
+  No Priority + Components with Open Work), component treemap (Top 10 filter),
+  SLA bar (counts; ~99% breach rate made the % variant a flat non-chart —
+  % moved to tooltips), 100% stacked status-mix column.
+- 4 new measures (25 total): % Resolved in 30 Days, Median Cycle Days (Trend),
+  % Open No Priority, Components with Open Work. Measures audit: zero orphans.
+- Polish pass all pages: KPI accent bars to theme green; Title-Case visual
+  titles; Year slicer header; every axis/tooltip chip renamed friendly
+  (Rename for this visual); month_start_date model format MMM yyyy; slicer
+  connectivity verified on all pages.
+- Analytics finding (Phil-driven): March 2025 median spike = bulk cleanup —
+  724 resolutions (~8x normal month) at 2,580-day median; matches page 1
+  outflow burst. README talking point; Issues Resolved kept in trend tooltip.
+- View contract change (deployed + mirrored): '(no component)' → 'No Component'
+  in vw_priority_component_mix.
+- Bugs banked: M2-15 (DAX BLANK coerces to 0 in comparisons — % Resolved in
+  30 Days admitted 6,970 open issues, 75.9% vs honest 19.5%).
+- Process drift ledger: M2-14 recurrences banked (container-first/cascading
+  bullets resets; full-list dump against the 1-page-per-chunk request).
+- Screenshots 01-03 captured to pbi/screenshots/; .pbix saved.
