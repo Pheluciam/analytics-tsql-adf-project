@@ -5,17 +5,19 @@
 
 ---
 
-## Current state (as of Phase 4 session 2 close, 2026-06-12)
+## Current state (as of Phase 5 close, 2026-06-12)
 
-- **Phase:** 4 COMPLETE — all three dashboard pages BUILT and polished
-  (Backlog Pressure / Cycle Time & Ageing / Priority & Component Mix),
-  25 documented measures (4 added this session), friendly titles + axis +
-  tooltip labels across every visual, KPI accent bars on theme green.
-  Screenshots in pbi/screenshots/ (01-03). .pbix saved at
-  pbi/jira_ticket_ops_analytics.pbix.
-- **Next up:** Phase 5 ship — README full pass (screenshots, data-audit note,
-  AI-assistance disclosure, March-2025 bulk-cleanup finding), repo About +
-  tags + profile entry + pin, final ENGINEERING_STANDARDS audit.
+- **Phase:** 5 COMPLETE — **MINI #2 CLOSED.** Pipeline, star schema, views,
+  3-page dashboard (25 measures), README, GitHub metadata and CV entry all
+  shipped. Final state: 25 tracked files, structural audit all-PASS.
+- **Shipped at close:** README full pass (Mini #1 repo name filled, all five
+  portfolio entries hyperlinked); repo About + 14 topics set (hub-size
+  verified); profile README restructured — Focused Projects (both minis,
+  newest first) above End-to-End Platform Projects, credibility-gap framing;
+  repo pinned; CV projects blurb delivered (Jira Ticket-Ops Analytics
+  Pipeline, matching CV house format).
+- **Outstanding:** none. One bundled commit + push lands this closeout;
+  mermaid render check on GitHub after push.
 
 ## Environment reference
 
@@ -69,6 +71,14 @@
   dependent DAX filter in Components with Open Work updated to match.
 - 2026-06-12 (Phase 4 s2) — Measures audit: zero deletions. (Running) pair feeds
   Net Backlog; TI batch (YTD/MoM%/PM) kept as documented portfolio evidence.
+- 2026-06-12 (Phase 5) — Profile README repositioned around the credibility gap
+  (Phil's framing): minis lead as "Focused Projects" (believable solo builds),
+  the three larger builds follow as "End-to-End Platform Projects". Size-based
+  labels ("Mini Projects") dropped — sections named by what they demonstrate.
+- 2026-06-12 (Phase 5) — GitHub topics chosen by verified hub size, not guess:
+  tsql over t-sql (1,058 vs 793 repos), powerbi over power-bi (15.6K vs 4.7K),
+  azure-sql-database over azure-sql (official product name). data-analytics
+  dropped as redundant third analytics tag. 14 topics final.
 
 ## Session closeouts
 
@@ -214,3 +224,27 @@
 - Process drift ledger: M2-14 recurrences banked (container-first/cascading
   bullets resets; full-list dump against the 1-page-per-chunk request).
 - Screenshots 01-03 captured to pbi/screenshots/; .pbix saved.
+
+### Phase 5 — 2026-06-12 (this session) — SHIP + CLOSE
+
+- README finalised: Mini #1 repo name filled (operations-analytics-dbt-tableau-
+  project), all five Related-projects entries hyperlinked for consistency with
+  the profile page.
+- GitHub metadata shipped (Phil, portal-side): repo About description set to
+  the mini #1 About pattern; 14 topics applied after hub-size verification
+  (see decisions log); repo confirmed pinned.
+- Profile README rewritten and delivered as a paste-able block: Focused
+  Projects section (mini #2 entry added, listed first) above End-to-End
+  Platform Projects; Stack rows gained Azure Data Factory + Azure SQL;
+  bold-formatting inconsistency on the lakehouse bullet fixed.
+- CV blurb delivered in CV house format (title / paragraph / Tech / link);
+  "upserts" reworded to "MERGE loads" after Word flagged it.
+- Final ENGINEERING_STANDARDS phase-boundary structural audit: all PASS
+  (25 tracked files, monotonic prefixes, no stale scaffolding, doc references
+  resolve, ignore hygiene intact). pbi/jira_ops_theme.json left untracked by
+  design (rejected-theme working file, *.json ignore catches it).
+- One environment quirk: a stale .git/index.lock created by a sandbox git
+  status could not be unlinked from the sandbox; removed by Phil in PowerShell.
+- LEARNINGS Phase 5 entries banked (M2-20 + design notes). Session close =
+  one bundled commit + push; mermaid render verified on GitHub post-push.
+  **MINI #2 CLOSED.**
