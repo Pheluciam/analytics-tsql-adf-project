@@ -2,7 +2,7 @@
 
 > Delivery / ticket-ops analytics mini-project — real Jira issue data → Azure Data Factory →
 > Azure SQL raw JSON → T-SQL star schema (OPENJSON / MERGE / views) → 3-page Power BI
-> dashboard. Mini-project #2 of Phil's data engineering portfolio.
+> dashboard. Mini-project #2 of my data engineering portfolio.
 
 **Status: COMPLETE — 2026-06-12.** End-to-end and interview-ready: paginated REST ingestion
 (ADF Copy, raw JSON pages, no flattening) → T-SQL shred and star-schema model (OPENJSON,
@@ -136,14 +136,13 @@ issues are over 90 days old**, the breach pile is entirely untriaged/low-priorit
 and open work spans 140 components.
 
 ## Related projects
-
-Part of Phil's data-engineering portfolio:
-
-- **Project #1 — [cdc-nt-gtfs-project](https://github.com/Pheluciam/cdc-nt-gtfs-project)** — dbt-first pipeline on PostgreSQL → Power BI; Kimball modelling foundation.
-- **Project #2 — [retail-demand-forecasting-project](https://github.com/Pheluciam/retail-demand-forecasting-project)** — cloud warehouse + orchestration: Azure SQL → Snowflake → Airflow (Docker) → dbt → Power BI, with a Cortex forecast layer.
-- **Project #3 — [financial-analytics-lakehouse-project](https://github.com/Pheluciam/financial-analytics-lakehouse-project)** — AWS-native lakehouse: S3 + Glue + Athena + Iceberg, dbt-athena, Step Functions, 6-page Power BI, keyless OIDC CI/CD.
-- **Mini #1 — [operations-analytics-dbt-tableau-project](https://github.com/Pheluciam/operations-analytics-dbt-tableau-project)** — dbt testing + macros depth on the AdventureWorks distribution slice; PostgreSQL → dbt → Tableau Public.
-- **Mini #2 — analytics-tsql-adf-project** *(this one)* — Jira REST → ADF → Azure SQL → T-SQL star schema → Power BI; lead theme T-SQL depth.
+Part of my data-engineering portfolio — focused builds first, then full end-to-end platforms:
+- **Focused Build 1 — [operations-analytics-dbt-tableau-project](https://github.com/Pheluciam/operations-analytics-dbt-tableau-project)** — dbt testing + macros depth on a warehouse-distribution slice; PostgreSQL → dbt → Tableau.
+- **Focused Build 2 — analytics-tsql-adf-project** *(this one)* — Jira REST → Azure Data Factory → Azure SQL → T-SQL star schema → Power BI.
+- **Focused Build 3 — [health-analytics-fabric-project](https://github.com/Pheluciam/health-analytics-fabric-project)** — Microsoft Fabric end-to-end: AIHW MyHospitals API → Lakehouse medallion → PySpark star schema → Power BI.
+- **End-to-End Platform 1 — [cdc-nt-gtfs-project](https://github.com/Pheluciam/cdc-nt-gtfs-project)** — dbt-first pipeline on PostgreSQL → Power BI; Kimball modelling foundation.
+- **End-to-End Platform 2 — [retail-demand-forecasting-project](https://github.com/Pheluciam/retail-demand-forecasting-project)** — Azure SQL → Snowflake → Airflow (Docker) → dbt → Power BI, with a Cortex forecast layer.
+- **End-to-End Platform 3 — [financial-analytics-lakehouse-project](https://github.com/Pheluciam/financial-analytics-lakehouse-project)** — AWS-native lakehouse: S3 + Glue + Athena + Iceberg, dbt-athena, Step Functions, 6-page Power BI, keyless OIDC CI/CD.
 
 ## Author
 
